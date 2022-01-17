@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Post;
 
 use App\Models\Post;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CreatePostRequest;
-use App\Http\Requests\UpdatePostRequest;
+use App\Http\Requests\Post\CreatePostRequest;
+use App\Http\Requests\Post\UpdatePostRequest;
 
-class AdminPostController extends Controller
+class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -61,7 +61,7 @@ class AdminPostController extends Controller
     {
         $post->update($request->only(['title', 'content', 'category_id']));
 
-        return response()->json(['data' => $post]);
+        return response()->json(['message' => 'پست با موفقیت ویرایش شد']);
     }
 
     /**

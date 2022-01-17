@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminPostController;
-use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Post\PostController;
+use App\Http\Controllers\Post\PostCommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,4 +29,6 @@ Route::group(['prefix' => 'auth'], function () {
 
 });
 
-Route::apiResource('admin/posts', AdminPostController::class);
+Route::apiResource('posts', PostController::class);
+Route::apiResource('posts.comments', PostCommentController::class)
+    ->only(['store', 'update', 'destroy']);
