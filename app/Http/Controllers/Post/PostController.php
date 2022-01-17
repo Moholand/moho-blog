@@ -16,7 +16,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::with(['category', 'likes'])->get();
 
         return response()->json(['data' => $posts]);
     }
@@ -33,7 +33,10 @@ class PostController extends Controller
             $request->only(['title', 'content', 'category_id'])
         );
 
-        return response()->json(['data' => $post]);
+        return response()->json([
+            'data' => $post,
+            'message' => 'پست با موفقیت ایجاد شد'
+        ]);
     }
 
     /**
@@ -45,7 +48,7 @@ class PostController extends Controller
     public function show($id)
     {
         // Get the post with category and all the related comments
-        $post = Post::where('id', $id)->with(['category', 'comments'])->get();
+        $post = Post::where('id', $id)->with(['category', 'comments', 'likes'])->get();
 
         return response()->json(['data' => $post]);
     }
