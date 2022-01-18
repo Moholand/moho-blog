@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
+use App\Models\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\Auth\CreateRegisterRequest;
 
 class AuthController extends Controller
 {
@@ -14,7 +16,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
     /**
@@ -31,6 +33,17 @@ class AuthController extends Controller
         }
 
         return $this->respondWithToken($token);
+    }
+
+    public function register(CreateRegisterRequest $request)
+    {
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        return response()->json(['message' => 'نام‌نویسی با موفقیت انجام شد']);
     }
 
     /**
