@@ -19,7 +19,7 @@ class CreatePostsTable extends Migration
             $table->text('content');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('category_id');
-            $table->string('image')->nullable();
+            $table->string('image')->default('image.jpg');
             $table->timestamps();
         });
     }

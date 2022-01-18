@@ -24,14 +24,13 @@ class UpdatePostRequest extends FormRequest
      */
     public function rules()
     {
-
         return [
             'title' => [
                 'max:255',
-                Rule::unique('posts')->ignore($this->post->title, 'title')
+                Rule::unique('posts')->ignore($this->post, 'id')
             ],
             'category_id' => 'integer',
-            'image' => 'nullable'
+            'image' => 'image|mimes:jpg,png,jpeg'
         ];
     }
 }

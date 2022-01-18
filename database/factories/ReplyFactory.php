@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class PostFactory extends Factory
+class ReplyFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -14,9 +14,8 @@ class PostFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->realText(30),
             'content' => $this->faker->realText(300),
-            'user_id' => 1, //Admin user with id=1
+            'user_id' => (\App\Models\User::factory()->create())->id
         ];
     }
 }

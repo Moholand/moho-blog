@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers\Post;
 
+use Carbon\Carbon;
 use App\Models\Post;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use App\Http\Requests\Post\CreatePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
 
 class PostController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('admin.check', ['only' => ['store', 'update', 'destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -29,9 +37,18 @@ class PostController extends Controller
      */
     public function store(CreatePostRequest $request)
     {
-        $post = auth('api')->user()->posts()->create(
+        $post = auth('api')->user()->posts()->make(
             $request->only(['title', 'content', 'category_id'])
         );
+        
+        // Save post image in public image/posts folder
+        if($request->image) {
+            $imageName = Carbon::now()->timestamp . '.' . $request->image->extension();
+            $request->file('image')->storeAs('posts', $imageName);
+            $post->image = $imageName;
+        }
+
+        $post->save();
 
         return response()->json([
             'data' => $post,
@@ -60,11 +77,29 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(UpdatePostRequest $request, $post_id)
     {
-        $post->update($request->only(['title', 'content', 'category_id']));
+        $post = Post::findOrFail($post_id);
 
-        return response()->json(['message' => 'پست با موفقیت ویرایش شد']);
+        $post->title = $request->title;
+        $post->content = $request->content;
+        $post->category_id = $request->category_id;
+
+        if($request->image) {
+            // First Delete previous image
+            File::delete(public_path('image/posts') . '/' . $post->image);
+
+            $imageName = Carbon::now()->timestamp . '.' . $request->image->extension();
+            $request->file('image')->storeAs('posts', $imageName);
+            $post->image = $imageName;
+        }
+
+        $post->save();
+
+        return response()->json([
+            'data' => $post,
+            'message' => 'پست با موفقیت ویرایش شد'
+        ]);
     }
 
     /**
@@ -75,6 +110,9 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        // First Delete post image
+        File::delete(public_path('image/posts') . '/' . $post->image);
+
         $post->delete();
 
         return response()->json([
