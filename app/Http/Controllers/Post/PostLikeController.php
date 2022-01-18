@@ -15,10 +15,10 @@ class PostLikeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $id)
+    public function store(Request $request, $post_id)
     {
         auth('api')->user()->likes()->create([
-            'post_id' => $id
+            'post_id' => $post_id
         ]);
 
         return response()->json(['message' => 'پست لایک شد']);

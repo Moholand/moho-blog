@@ -24,7 +24,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with(['category', 'likes'])->get();
+        $posts = Post::with(['category', 'likes'])->paginate(20);
 
         return response()->json(['data' => $posts]);
     }
@@ -62,10 +62,10 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($post_id)
     {
         // Get the post with category and all the related comments
-        $post = Post::where('id', $id)->with(['category', 'comments', 'likes'])->get();
+        $post = Post::where('id', $post_id)->with(['category', 'comments', 'likes'])->get();
 
         return response()->json(['data' => $post]);
     }

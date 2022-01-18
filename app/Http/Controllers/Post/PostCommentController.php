@@ -17,11 +17,11 @@ class PostCommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateCommentRequest $request, $id)
+    public function store(CreateCommentRequest $request, $post_id)
     {
         $comment = auth('api')->user()->comments()->create([
             'content' => $request->content,
-            'post_id' => $id
+            'post_id' => $post_id
         ]);
 
         return response()->json([
